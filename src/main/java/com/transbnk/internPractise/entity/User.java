@@ -11,11 +11,15 @@
     import java.util.List;
 
     @Entity
-    @Table(name = "users_table")
+    @Table(
+            name = "users_table",
+            uniqueConstraints = @UniqueConstraint(columnNames = {"email", "username"}))
     @Data
     @NoArgsConstructor
     public class User {
         @Id
+//        @GeneratedValue(strategy = GenerationType.SEQUENCE , generator = "users_table_seq")
+//        @SequenceGenerator(name = "users_table_seq", sequenceName = "users_table_sequence", allocationSize = 1)
         @GeneratedValue(strategy = GenerationType.AUTO)
         private Long id;
 

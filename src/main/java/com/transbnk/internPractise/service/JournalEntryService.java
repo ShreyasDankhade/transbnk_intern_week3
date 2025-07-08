@@ -25,7 +25,7 @@ public class JournalEntryService {
     @Transactional
     public void saveEntry(JournalEntry journalEntry, String username){
         try{
-            User user = userService.findUserByUserName(username);
+            User user = userService.findByUserName(username);
             journalEntry.setDate(LocalDateTime.now());
             journalEntry.setUser(null);
             JournalEntry saved = JournalEntryRepo.save(journalEntry);

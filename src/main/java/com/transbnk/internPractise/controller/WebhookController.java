@@ -19,8 +19,8 @@ public class WebhookController {
     private PaymentService paymentService;
 
 
-    @PostMapping("/payint")
-    public ResponseEntity<?> payInt(@PathVariable Long id,@PathVariable String status){
+    @PostMapping("/payint/{id}/{status}")
+    public ResponseEntity<?> payInt(@PathVariable("id") Long id,@PathVariable("status") String status){
         try{
             paymentService.payInt(id,status);
             return ResponseEntity.ok("Payment Intialized sent");
