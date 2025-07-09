@@ -77,7 +77,6 @@ public class UserService {
                 throw new AuthenticationServiceException("Authentication failed for user: " + loginRequestDto.getUsername());
             }
 
-            // Consider using the authenticated principal (UserDetails) instead of DTO
             return jwtService.generateToken(loginRequestDto);
 
         } catch (BadCredentialsException ex) {

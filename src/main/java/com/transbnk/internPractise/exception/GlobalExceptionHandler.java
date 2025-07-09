@@ -1,4 +1,4 @@
-package com.transbnk.internPractise.expection;
+package com.transbnk.internPractise.exception;
 
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.springframework.http.HttpStatus;

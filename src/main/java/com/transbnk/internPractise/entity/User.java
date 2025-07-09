@@ -1,7 +1,6 @@
     package com.transbnk.internPractise.entity;
 
     import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-    import com.fasterxml.jackson.annotation.JsonManagedReference;
     import jakarta.persistence.*;
     import lombok.Data;
     import lombok.NoArgsConstructor;
@@ -13,7 +12,7 @@
     @Entity
     @Table(
             name = "users_table",
-            uniqueConstraints = @UniqueConstraint(columnNames = {"email", "username"}))
+            uniqueConstraints = @UniqueConstraint(columnNames = {"email", "username","phoneNumber"}))
     @Data
     @NoArgsConstructor
     public class User {
@@ -34,9 +33,14 @@
 
         private String email;
 
+        private String phoneNumber;
+
         private String status;
 
         @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
         @JsonIgnoreProperties("user")
         private List<JournalEntry> journalEntries = new ArrayList<>();
+
+        @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+        private List<Otp> otps = new ArrayList<>();
     }
