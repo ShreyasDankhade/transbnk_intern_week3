@@ -50,7 +50,7 @@ public class AwsBucketController {
             awsS3FileUploadService.deleteFile(fileName);
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body("File Deleted from the S3 bucket");
+                    .body("File - " + fileName + " deleted from the S3 bucket");
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)

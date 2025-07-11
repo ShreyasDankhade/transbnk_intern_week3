@@ -60,6 +60,13 @@ internPractise/
 * List all entries: `GET /journal/all`
 * Search journals: `POST /journal/search` using specifications
 
+### 👥 User Management
+
+* Register Users : `POST /users/register`
+* Login of users : `POST /users/login`
+* List all users: `GET /users`
+* `Pagination` & `Filter` users by criteria
+
 ### 📂 Excel Import/Export
 
 * Upload Excel to DB: `POST /user/excel-upload`
@@ -68,9 +75,9 @@ internPractise/
 
 ### ☁️ AWS S3 File Storage
 
-* Upload file to S3: `POST /s3/upload`
-* Download file from S3: `GET /s3/download?fileName=...`
-* **Delete file from S3: `DELETE /s3/delete?fileName=...`**
+* Upload file to S3: `POST /api/storage/upload`
+* Download file from S3: `GET /api/storage/download?fileName=...`
+* **Delete file from S3: `DELETE /api/storage/delete?fileName=...`**
 * Integrated using **AWS SDK v2** with S3 client bean
 * Handles bucket configuration in `S3Config.java`
 
@@ -86,23 +93,31 @@ internPractise/
 
 ---
 
-## 🔄 API Overview
+## 🔗 Key API Endpoints
 
-| Endpoint                | Method | Description                         |
-|-------------------------| ------ | ----------------------------------- |
-| `/user/login`           | POST   | Log in using mobile number/username |
-| `/sms/sendOTP`          | POST   | Sends OTP via Twilio                |
-| `/sms/verifyOTP`        | POST   | Verifies received OTP               |
-| `/user/all`             | GET    | Lists all users                     |
-| `/user/excel-upload`    | POST   | Uploads users via Excel             |
-| `/user/export`          | GET    | Exports users to Excel              |
-| `/journal/save`         | POST   | Creates a journal entry             |
-| `/journal/all`          | GET    | Lists all journal entries           |
-| `/journal/search`       | POST   | Searches journal entries            |
-| `/client/sample`        | GET    | Calls external API using WebClient  |
-| `/api/storage/upload`   | POST   | Uploads a file to AWS S3            |
-| `/api/storage/download` | GET    | Downloads a file from AWS S3        |
-| `//api/storage/delete`  | DELETE | Deletes a file from AWS S3          |
+| Endpoint                        | Method | Description                        |
+|---------------------------------|--------|------------------------------------|
+| `/users/register`               | POST   | Register a new user                |
+| `/users/login`                  | POST   | Login and receive JWT              |
+| `/users`                        | GET    | List all users                     |
+| `/users/pageable-user`          | GET    | Paginated user list                |
+| `/users/specification`          | GET    | Filter users by criteria           |
+| `/users/excel`                  | GET    | Download users as Excel            |
+| `/users/excel/upload`           | POST   | Upload users via Excel             |
+| `/users/id/{id}`                | GET    | Get user by ID                     |
+| `/users/update-user/{username}` | PUT    | Update user by username            |
+| `/users/delete-user/{id}`       | DELETE | Delete user by ID                  |
+| `/journal/get-journal/{username}`| GET   | List journals for user             |
+| `/journal/post-journal/{username}`| POST | Add journal for user               |
+| `/journal/id/{id}`              | GET    | Get journal by ID                  |
+| `/journal/id/{id}`              | DELETE | Delete journal by ID               |
+| `/journal/update-journal/{username}/{id}`| PUT | Update journal by ID           |
+| `/sms/sendOTP`                  | POST   | Send OTP via Twilio                |
+| `/sms/verifyOTP`                | POST   | Verify OTP                         |
+| `/api/storage/upload`           | POST   | Upload file to AWS S3              |
+| `/api/storage/download`         | GET    | Download file from AWS S3          |
+| `/api/storage/delete`           | DELETE | Delete file from AWS S3            |
+| `/client/sample`                | GET    | Call external API (WebClient demo) |
 
 ---
 

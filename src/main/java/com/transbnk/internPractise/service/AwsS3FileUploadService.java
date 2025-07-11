@@ -44,9 +44,8 @@ public class AwsS3FileUploadService {
         }
     }
 
-    public String deleteFile(String fileName){
-        amazonS3.deleteObject(bucketName,fileName);
-        return fileName+ " deleted ... ";
+    public void deleteFile(String fileName) {
+        amazonS3.deleteObject(bucketName, fileName);
     }
 
 
