@@ -7,7 +7,10 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -69,31 +72,30 @@ public class ExcelToDbHelper {
     // The below is the Optimized Code
 
     // Checks if the file is in Excel format (XLSX)
+
     public static boolean checkExcelFormat(MultipartFile file) {
-        return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                .equalsIgnoreCase(file.getContentType());
+        String contentType = file.getContentType();
+        String fileName = file.getOriginalFilename();
+
+        return contentType != null && (
+                contentType.equalsIgnoreCase("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") ||
+                        contentType.equalsIgnoreCase("text/csv") ||
+                        (fileName != null && (fileName.endsWith(".csv") || fileName.endsWith(".xlsx")))
+        );
     }
 
-    // Converts Excel input stream to list of UserExcel objects
-    public static List<UserExcel> convertExcelToListUser(InputStream inputStream) {
-        List<UserExcel> users = new ArrayList<>();
-
-        try (Workbook workbook = new XSSFWorkbook(inputStream)) {
-            Sheet sheet = workbook.getSheetAt(0);
-            Iterator<Row> rows = sheet.iterator();
-
-            if (rows.hasNext()) rows.next(); // Skip header row
-
-            while (rows.hasNext()) {
-                Row row = rows.next();
-                users.add(parseUserFromRow(row));
-            }
-
-        } catch (Exception e) {
-            // Log error (in real applications, use a logger)
-            log.error(e.getMessage());
+    public static List<UserExcel> convertExcelToListUser(InputStream inputStream, String filename) {
+        if (filename == null) {
+            throw new IllegalArgumentException("Filename must not be null");
         }
-        return users;
+
+        if (filename.endsWith(".csv")) {
+            return parseCSVToUsers(inputStream);
+        } else if (filename.endsWith(".xlsx")) {
+            return parseExcelToUsers(inputStream);
+        } else {
+            throw new IllegalArgumentException("Unsupported file type. Only .csv and .xlsx are supported.");
+        }
     }
 
     private static UserExcel parseUserFromRow(Row row) {
@@ -113,5 +115,56 @@ public class ExcelToDbHelper {
         user.setEmail(emailCell.toString().trim());
 
         return user;
+    }
+
+    private static List<UserExcel> parseExcelToUsers(InputStream inputStream) {
+        List<UserExcel> users = new ArrayList<>();
+
+        try (Workbook workbook = new XSSFWorkbook(inputStream)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+
+            if (rows.hasNext()) rows.next();
+
+            while (rows.hasNext()) {
+                Row row = rows.next();
+                users.add(parseUserFromRow(row));
+            }
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return users;
+    }
+
+    private static List<UserExcel> parseCSVToUsers(InputStream inputStream) {
+        List<UserExcel> users = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            boolean skipHeader = true;
+
+            while ((line = reader.readLine()) != null) {
+                if (skipHeader) {
+                    skipHeader = false;
+                    continue;
+                }
+
+                String[] tokens = line.split(",", -1); // keep empty strings
+
+                if (tokens.length >= 8) {
+                    UserExcel user = new UserExcel();
+                    user.setId(Long.parseLong(tokens[0].trim()));
+                    user.setUsername(tokens[1].trim());
+                    user.setRole(tokens[2].trim());
+                    user.setEmail(tokens[3].trim());
+                    users.add(user);
+                }
+            }
+
+        } catch (IOException e) {
+            log.error("Error reading CSV: {}", e.getMessage());
+        }
+        return users;
     }
 }

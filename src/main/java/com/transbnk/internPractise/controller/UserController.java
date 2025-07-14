@@ -104,7 +104,8 @@ public class UserController {
             this.excelService.save(file);
             return ResponseEntity.of(Optional.of(Map.of("message", "file is uploaded successfully")));
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please Upload only Excel file.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Please Upload an Excel file(xlsx/csv). No other format Allowed.");
     }
 
     @PostMapping("/register")
